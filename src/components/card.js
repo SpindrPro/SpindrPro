@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useSpring, animated } from '@react-spring/web';
 import TinderCard from 'react-tinder-card'
 
+
+
 const images = [
   'https://picsum.photos/400/600',
   'https://picsum.photos/401/601',
@@ -11,12 +13,13 @@ const images = [
 ];
 
 
-export default function Card() {
+export default function Card(props) {
 
 
   const [lastDirection, setLastDirection] = useState();
   
   const swiped = (direction, nameToDelete) => {
+    console.log(direction)
     setLastDirection(direction)
   }
 
@@ -27,14 +30,14 @@ export default function Card() {
   return (
     <div className='cardContainer'> 
       {images.map((img) => {
-        return <TinderCard className='swipe' key={img} onSwipe={(dir) => swiped(dir, img)} onCardLeftScreen={() => outOfFrame(img)}>
-          <div className='card' style={{backgroundImage: img}}>
-          bob
+        return <TinderCard className='swipe' key={img} onSwipe={(dir) => swiped(dir, img)} onCardLeftScreen={() => outOfFrame(img)} preventSwipe={['up', 'down']}>
+          <div className='card container1' style={{backgroundImage: `url(${img})`}}>
           </div>
+          <p>{props.musicList}</p>
+          <button id='playButton'>Play</button>
         </TinderCard>
       })
-      }
-      <button>Play</button>
+      }  
     </div>
   )
 }
