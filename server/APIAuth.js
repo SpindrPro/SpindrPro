@@ -51,7 +51,7 @@ app.get('/callback', async (req, res) => {
         const tokens = await requestAccessToken(clientId, redirectUri, codeVerifier, code);
         accessToken = tokens.access_token;
         console.log("accessToken: ", accessToken);
-
+        res.send('Access token obtained successfully');
       } catch (error) {
         console.error(error);
         res.status(500).send('Error occurred during the authorization process');

@@ -39,7 +39,7 @@ const redirectUri = process.env.REDIRECT_URI;
 
 async function getTracks(genres) {
   const url = `https://api.spotify.com/v1/recommendations?seed_genres=${genres}`;
-  const headers = { Authorization: `Bearer BQDTdxlMeVK94MNsvtGiODzw1Y3cVmm-iEPq6QEV-oyolVIhp3utxIHGQ3Dn8YqobcJXnJ7IJjcYrgzBnFrnJspopfT_w3kxvjHZUjkwyGV7HoPxwHHDD3y2o5d8L5Cq36gTVpjlY4BL3MNCswux6LG6Y9QOGarzku9UVA3P-edSUg3Bl7SJmCG-UqVJySvnzTiNmEloA5fLlGgBM7x7x9k` };
+  const headers = { Authorization: `Bearer BQB2DvNbrZoSFiaN2oAxreeKNEF0PtwWNceYCJzh5a9PLJN2VeMeA-BdvQYJIPBMQyV4gFtyI9KwYkqixQRw9MqgX_pvd2IHsb8hmoxEjGY3faaP8ylwQXsnQB8S3RLx2uujJAl9M-9n3o3lmJ9IUBeVATa9xXw6kJYlMwFmSL2Mp8vqi-ikYyvGu0KdutHOnCSXLhCfoA6hPM4U37jqaKA` };
 
   try {
     const response = await axios.get(url, { headers });
@@ -60,15 +60,16 @@ app.get("/genre", async (req, res, next) => {
     const tracks = await getTracks(genre);
    
     const allTracks = tracks.tracks;
-    console.log(typeof allTracks[0].album.images[0].url)
-    console.log(typeof allTracks[0].name)
-    console.log(typeof allTracks[0].artists[0].name)
-    console.log(typeof allTracks[0].album.name)
-    console.log(typeof allTracks[0].preview_url)
+    // console.log(typeof allTracks[0].album.images[0].url)
+    // console.log(typeof allTracks[0].name)
+    // console.log(typeof allTracks[0].artists[0].name)
+    // console.log(typeof allTracks[0].album.name)
+    // console.log(allTracks[0].preview_url)
     // loop thru all tracks array
-    for(let i = 0; i < 1; i++){
+    for(let i = 0; i < allTracks.length; i++){
       // save new track entry to db
       console.log("in for loop")
+      if (allTracks[i].preview_url === null) continue;
       const doc = await Track.create({
         genre: genre,
         image: allTracks[i].album.images[0].url,
@@ -76,7 +77,6 @@ app.get("/genre", async (req, res, next) => {
         artist: allTracks[i].artists[0].name,
         albumName: allTracks[i].album.name,
         preview: allTracks[i].preview_url
-
       });
       console.log(doc);
     }
