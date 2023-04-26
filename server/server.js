@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+require("dotenv").config();
 // const path = require("path");
 const mongoose = require("mongoose");
 // const querystring = require("node:querystring");
@@ -12,10 +13,10 @@ const User = require("./models/userModel") //easier library for fetching
 //client ID is stored in .env file for security
 app.use(express.json());
 app.use(cors());
-require("dotenv").config();
+
 const PORT = 3000;
 
-const uri = 'mongodb+srv://sadmanhappy:spindrpro@spindrpro.s73plte.mongodb.net/test';
+const uri = process.env.ATLAS_URI;
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 const connection = mongoose.connection;
 connection.once("open", () => {

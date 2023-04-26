@@ -32,9 +32,8 @@ userController.createTrack = async (req, res, next) => {
 
     const { user_id } = req.params;
     const track = req.body;
-
-    console.log('user id', user_id)
-    console.log('body', req.body)
+console.log("song name: ", track.name)
+console.log("song id: ", track.id)
     try {
       const newTrack = await Track.create({
         spotify_id: track.id,

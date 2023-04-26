@@ -5,6 +5,7 @@ import TinderCard from 'react-tinder-card'
 export default function Card(props) {
   const [lastDirection, setLastDirection] = useState();
   const [playingStatus, setPlayingStatus] = useState({});
+  const audioRefs = useRef({});
 
   function togglePlay(trackId) {
     setPlayingStatus((prevState) => ({
@@ -14,19 +15,24 @@ export default function Card(props) {
   };
 
   useEffect(() => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.play();
-      } else {
-        audioRef.current.pause();
+    Object.entries(playingStatus).forEach(([trackId, isPlaying]) => {
+      const audioElement = audioRefs.current[trackId];
+      if (audioElement) {
+        if (isPlaying) {
+          audioElement.play();
+        } else {
+          audioElement.pause();
+        }
       }
-    }  
-  }, [isPlaying]);
+    });
+  }, [playingStatus]);
 
   const swiped = async (direction, swipedTrack) => {
     console.log(direction)
-    // stop the audio if it's playing
-    if (isPlaying) togglePlay();
+    // // stop the audio if it's playing
+    // console.log(swipedTrack.id)
+    // console.log(playingStatus[swipedTrack.id])
+    if (playingStatus[swipedTrack.id]) togglePlay(swipedTrack.id);
     // if card is swiped right, add track to db
     if (direction === 'right') {
       
@@ -66,7 +72,7 @@ export default function Card(props) {
           <audio ref={(el) => (audioRefs.current[track.id] = el)} >
             <source src={track.preview_url}></source>
           </audio>
-          <button onClick={() => togglePlay(track.id)}>{isPlaying? 'Pause' : 'Play'}</button>
+          <button onClick={() => togglePlay(track.id)}>{playingStatus[track.id]? 'Pause' : 'Play'}</button>
         </TinderCard>)
   })
 
