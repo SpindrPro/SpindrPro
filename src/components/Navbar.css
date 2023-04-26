@@ -1,0 +1,27 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Cabin&family=Dosis:wght@200&family=Sigmar&display=swap');
+.Navbar {
+    box-sizing: border-box;
+    margin: 0;
+    background: #02122e;
+    width: 100%;
+    padding: 0.5rem;
+    display: flex;
+    justify-content: space-around;
+  }
+  
+  .Navbar a {
+    font-family: 'Dosis', sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+    text-decoration: none;
+    color: #fff;
+    transition: all 0.3s ease 0s;
+  }
+  
+  .Navbar a:hover {
+    color: #68bce0;
+  }
+  .Navbar a.Navbar-active {
+    color: white;
+  }

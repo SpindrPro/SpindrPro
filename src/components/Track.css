@@ -1,0 +1,21 @@
+.song {
+    max-width: 200px;
+    padding: 5px;
+	display: inline-block;
+	text-align: left;
+	min-height: 250px;
+	flex-shrink: 0;
+	border-radius: 5px;
+	border-width: 1px;
+    border-style: solid;
+    border-color: #EEEEEE;
+	background-color: rgba(248, 248, 248, 0.696);
+}
+.song img {
+  background-color: chocolate;
+	max-width: 40%;
+	max-height: auto;
+	width: 40%;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+}
