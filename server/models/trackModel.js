@@ -1,4 +1,4 @@
-const mongooose = require("mongoose");
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const trackSchema = new Schema({

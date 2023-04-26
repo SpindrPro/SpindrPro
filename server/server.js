@@ -4,7 +4,8 @@ const path = require("path");
 const mongoose = require("mongoose");
 const querystring = require("node:querystring");
 const crypto = require("crypto");
-const axios = require("axios"); //easier library for fetching
+const axios = require("axios");
+const Track = require("./models/trackModel") //easier library for fetching
 //this allows you to access .env files to read data
 //client ID is stored in .env file for security
 
@@ -12,7 +13,7 @@ const axios = require("axios"); //easier library for fetching
 require("dotenv").config();
 const PORT = process.env.PORT || 3000;
 
-const uri = process.env.ATLAS_URI;
+const uri = 'mongodb+srv://sadmanhappy:spindrpro@spindrpro.s73plte.mongodb.net/test';
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 const connection = mongoose.connection;
 connection.once("open", () => {
@@ -35,6 +36,73 @@ Make sure to remove this after project is done if you care about your spotify se
 const clientSecret = 'YOUR_CLIENT_SECRET'; */
 
 const redirectUri = process.env.REDIRECT_URI;
+
+async function getTracks(genres) {
+  const url = `https://api.spotify.com/v1/recommendations?seed_genres=${genres}`;
+  const headers = { Authorization: `Bearer BQDTdxlMeVK94MNsvtGiODzw1Y3cVmm-iEPq6QEV-oyolVIhp3utxIHGQ3Dn8YqobcJXnJ7IJjcYrgzBnFrnJspopfT_w3kxvjHZUjkwyGV7HoPxwHHDD3y2o5d8L5Cq36gTVpjlY4BL3MNCswux6LG6Y9QOGarzku9UVA3P-edSUg3Bl7SJmCG-UqVJySvnzTiNmEloA5fLlGgBM7x7x9k` };
+
+  try {
+    const response = await axios.get(url, { headers });
+    // console.log("response.data: ", response.data)
+    return response.data;
+  } catch (err) {
+    console.error('Error in getArtistAlbums:', err);
+  }
+}
+
+
+app.get("/genre", async (req, res, next) => {
+  // deconstruct genre from params
+  // const { genre } = req.params;
+  const genre = 'chill,pop';
+  try{
+    // fetch reccomended tracks from spotify
+    const tracks = await getTracks(genre);
+   
+    const allTracks = tracks.tracks;
+    console.log(typeof allTracks[0].album.images[0].url)
+    console.log(typeof allTracks[0].name)
+    console.log(typeof allTracks[0].artists[0].name)
+    console.log(typeof allTracks[0].album.name)
+    console.log(typeof allTracks[0].preview_url)
+    // loop thru all tracks array
+    for(let i = 0; i < 1; i++){
+      // save new track entry to db
+      console.log("in for loop")
+      const doc = await Track.create({
+        genre: genre,
+        image: allTracks[i].album.images[0].url,
+        title: allTracks[i].name,
+        artist: allTracks[i].artists[0].name,
+        albumName: allTracks[i].album.name,
+        preview: allTracks[i].preview_url
+
+      });
+      console.log(doc);
+    }
+    return res.status(200).json("Tracks Added");
+  }
+  catch(err) {
+    return next({
+      err: "Tracks were not added to database",
+    });
+  }
+})
+
+
+// global error handler
+app.use((err, req, res, next) => {
+  const defaultErr = {
+    log: 'Express error handler caught unknown middleware error',
+    status: 500,
+    message: { err: 'An error occurred' },
+  };
+  const errorObj = Object.assign({}, defaultErr, err);
+  console.log(errorObj.log);
+  return res.status(errorObj.status).json(errorObj.message);
+});
+
+
 
 //These define the parameters that the user will provide us access to.
 //Additional scopes can be found here: https://developer.spotify.com/documentation/web-api/concepts/scopes

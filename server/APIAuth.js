@@ -90,14 +90,14 @@ async function getTracks(genres) {
   
     try {
       const response = await axios.get(url, { headers });
-      console.log("response.data: ", response.data)
+      // console.log("response.data: ", response.data)
       return response.data;
     } catch (err) {
       console.error('Error in getArtistAlbums:', err);
     }
   }
 
-getTracks('pop,classical');
+// getTracks('pop,classical');
 
 app.listen(3000, () => {
     console.log('App listening on port 3000');
