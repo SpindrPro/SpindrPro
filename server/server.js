@@ -3,8 +3,9 @@ const app = express();
 require("dotenv").config();
 // const path = require("path");
 const mongoose = require("mongoose");
-// const querystring = require("node:querystring");
+const querystring = require("node:querystring");
 // const crypto = require("crypto");
+const base64url = require('base64url');
 // const axios = require("axios");
 const cors = require('cors');
 
@@ -31,12 +32,14 @@ connection.once("open", () => {
 // app.use(cookieParser());
 
 
-// const clientId = process.env.CLIENT_ID; //ADD YOUR OWN CLIENT ID to your .env file
-// const clientSecret = process.env.CLIENT_SECRET; //ADD YOUR OWN CLIENT SECRET
-// /*Will need to include this if using PKCE auth code flow. 
-// Secret is generated when a dev account on spotify is created
-// Make sure to remove this after project is done if you care about your spotify security
-// const clientSecret = 'YOUR_CLIENT_SECRET'; */
+const redirectUri = process.env.REDIRECT_URI;
+const authRouter = require("./authRouter.js")
+
+app.use("/", authRouter);
+
+app.get('/redirect', (req, res) => {
+  res.status(200).json("http://localhost:8080/mainPage")
+})
 
 // const redirectUri = process.env.REDIRECT_URI;
 
@@ -92,7 +95,7 @@ app.use((err, req, res, next) => {
 
 // const stateKey = "spotify_auth_state";
 
-// //GET request to spotify's authorization page
+//GET request to spotify's authorization page
 // app.get("/login", (req, res) => {
 //   //Below is for PKCE, to implement later
 //   // const codeVerifier = generateRandomString();
@@ -114,12 +117,33 @@ app.use((err, req, res, next) => {
 //   res.cookie(stateKey, state);
 //   res.redirect(authorizationUrl);
 // });
+//   const authorizationUrl =
+//     "https://accounts.spotify.com/authorize?" +
+//     querystring.stringify({
+//       response_type: "code", //required
+//       client_id: clientId, //required
+//       scope: scopes.join(" "), //optional scopes
+//       redirect_uri: redirectUri, //uri that we set when we requested client id on spotify's create app
+//       //also for PKCE:
+//       // code_challenge: codeChallenge,
+//       // code_challenge_method: 'S256',
+//       state: state,
+//     });
+//   res.cookie(stateKey, state);
+//   res.redirect(authorizationUrl);
+// });
 
 // // get request on callback page. we set the callback page as redirect uri when we got client id from spotify
 // app.get("/callback", (req, res) => {
 //   const code = req.query.code || null; //pulling out the authorization code after oauthing
 //   const state = req.query.state || null;
+// // get request on callback page. we set the callback page as redirect uri when we got client id from spotify
+// app.get("/callback", (req, res) => {
+//   const code = req.query.code || null; //pulling out the authorization code after oauthing
+//   const state = req.query.state || null;
 
+//   //note to jessica: we added this earlier. too tired to understand if it actually plays a more important part now that we are using cookies
+//   const storedState = req.cookies ? req.cookies[stateKey] : null; //if we have cookies, then pull out the value from stateKey property
 //   //note to jessica: we added this earlier. too tired to understand if it actually plays a more important part now that we are using cookies
 //   const storedState = req.cookies ? req.cookies[stateKey] : null; //if we have cookies, then pull out the value from stateKey property
 
@@ -178,6 +202,239 @@ app.use((err, req, res, next) => {
 //           // httpOnly: true,
 //           // secure: true, //only transmit cookies over HTTPS
 //           maxAge: 3600000, //cookie will expire in an hour
+//         });
+
+//         res.redirect("http://localhost:8080");
+
+//         // axios
+//         //   .get('https://api.spotify.com/v1/me', {
+//         //     headers: {
+//         //       Authorization: `${token_type} ${access_token}`,
+//         //     },
+//         //   })
+
+//         //   .then((response) => {
+//         //     //response using <pre> will display data received from spotify without linebreaks, whitespace
+//         //     //axios stores data returned by requests in the data property of the response obj
+//         //     //code below is to test whether we get the right response back from spotify
+//         //     // res.send(`<pre>${JSON.stringify(response.data, null, 2)}</pre>`);
+
+//         //     res.redirect('http://localhost:3000') //once we successfully get token, redirect to main page
+//         //   });
+//       } else {
+//         //if not 200 response, server will give back what spotify is serving
+//         res.send(response);
+//       }
+//     })
+//     .catch((error) => {
+//       res.send(error);
+//     });
+// });
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../src/index.html"));
+});
+
+// app.post("/getSongRecs", (req, res) => {
+//   // res.set('Access-Control-Allow-Origin', '*');
+//   const { genres } = req.body;
+//   //if access token exists in req cookie then assign it, otherwise set it to null
+//   const access_token = req.cookies ? req.cookies["access_token"] : null;
+
+//   //check to see if token exists
+//   if (!access_token) {
+//     return res.send("NO TOKENS HERE, TRY AGAIN LOSER.");
+//   }
+
+//   const spotifyApi = new SpotifyWebApi();
+//   spotifyApi.setAccessToken(access_token);
+
+//   spotifyApi
+//     .getRecommendations({
+//       seed_genres: "pop,chill",
+//       max_popularity: 60,
+//     })
+//     .then((data) => {
+//       const recs = data.body;
+
+//       let trackDetails = []; //array to store all 20 found uris of tracks from api call
+
+//       recs.tracks.forEach((track) => {
+//         //only store tracks that have preview URLs
+//         if (track.preview_url !== null) {
+//           trackDetails.push({
+//             trackName: track.name,
+//             artistName: track.artists[0].name,
+//             albumImg: track.album.images[0], //get the largest size of album img for track, obj contains url and height/width
+//             trackUri: track.uri,
+//             previewUrl: track.preview_url,
+//           });
+//         }
+//       });
+
+//       const recTracks = {
+//         tracks: recs.tracks, //full object just in case react app needs it
+//         trackDetails, //obj containing most necessary details for react app
+//       };
+//       res.json(recTracks);
+//     })
+//     .catch((error) => {
+//       console.error("THIS IS THE ERROR: ", error);
+//     });
+// });
+
+app.listen(PORT, () => console.log(`Listening on PORT: ${PORT}`));
+
+// //TODO:
+// //CONNECT TO THE DATABASE TO STORE ACCESS TOKEN INFO ON USER AS WELL AS OTHER DATA LIKE PREVIOUS SONG SELECTIONS AND RECS
+
+// /* DELETE...NO LONGER NEEDED....
+
+//THIS IS JUST A TEST ENDPOINT TO SEE IF CODE WORKS FOR fetch.js
+//delete this later since frontend handling fetch requests is cleaner, no need to use server as middleware to fetch spotify data
+// app.get('/getRecs', async (req, res) => {
+//     // const [cookies] = useCookies(['access_token']);
+//     // const token = cookies.get('access_token');
+//     // const tokenType = cookies.get('token_type');
+//     const token = req.cookies ? req.cookies['access_token'] : null;
+//     const tokenType = req.cookies ? req.cookies['token_type'] : null;
+
+//     const params = {
+//         limit: 50,
+//         seed_genres: "pop,chill,dance,rnb", //genres up to 5, need to be a string, comma-separated. ex: "pop,edm,chill"
+//         max_popularity: 40, //hardcoded for now? maybe let UI handle an input field for popularity too
+//     }
+//     axios.defaults.headers.common['Authorization'] = `${tokenType} ${token}`;
+
+//     try { 
+//         const response = await axios.get('https://api.spotify.com/v1/recommendations', {params});
+
+//         let trackDetails = []; //array to store all 20 found uris of tracks from api call
+
+//         response.data.tracks.forEach((track) => {
+//           //only store tracks that have preview URLs
+//           if (track.preview_url !== null) {
+//             trackDetails.push({
+//                 trackName: track.name,
+//                 artistName: track.artists[0].name, 
+//                 albumImg: track.album.images[0], //get the largest size of album img for track, obj contains url and height/width
+//                 trackUri: track.uri,
+//                 previewUrl: track.preview_url, 
+//             });
+//           }
+//         });
+
+//         // obj contains:
+//         // - array of objects: all tracks and their details queried from recommendations endpoint
+//         // - array of objects: track name, artist name, album art, track URI, preview URL
+
+//         const recTracks = {
+//           tracks: response.data.tracks, //full object just in case react app needs it
+//           trackDetails, //obj containing most necessary details for react app
+//       }
+//       console.log(recTracks);
+//       return recTracks;
+
+//   } catch (err) { 
+//       console.log(err);
+//   }
+// })
+
+// app.get('/createPlaylist', (req, res) => {
+//   //if access token exists in req cookie then assign it, otherwise set it to null
+//   const access_token = req.cookies ? req.cookies['access_token'] : null;
+
+//   //check to see if token exists
+//   if (!access_token) {
+//     return res.send('NO TOKENS HERE, TRY AGAIN LOSER.');
+//   }
+
+//   const spotifyApi = new SpotifyWebApi();
+//   spotifyApi.setAccessToken(access_token);
+
+//   spotifyApi
+//     .createPlaylist('THIS IS A PLAYLIST GENERATED BY MY APPLICATION HOW COOL', {
+//       public: false,
+//     })
+//     .then((data) => {
+//       console.log('created a playlist boiiiiii');
+//       console.log(data.body);
+//       res.send('PLAYLIST CREATE COMPLETE. WOO.');
+//     })
+//     .catch((error) => {
+//       console.error("didn't work :( :", error);
+//       res.send('ERROR, NO PLAYLIST');
+//     });
+// });
+
+// app.get('/test', (req, res) => {
+//   // console.log('bobo');
+//   res.status(200).json('is this wog?');
+// });
+
+// app.post('/test', (req, res) => {
+//   res.status(201).send('WOOOOO THIS IS YOUR DATA');
+// });
+
+
+
+
+// */
+
+//NOTES ON ACCESS TOKEN STORAGE:
+/* 
+When you receive an access token from an OAuth2 server, you can store it in a secure manner to use it later for authenticating API requests. 
+One way to do this is by storing the token in a secure cookie in the browser or in a secure storage system on the server, such as a database or cache. 
+The token should be encrypted and signed to ensure its integrity.
+
+In a browser-based application, you can store the token in a cookie with the HttpOnly and Secure flags set. 
+The HttpOnly flag prevents the cookie from being accessed by JavaScript, which helps to protect against 
+cross-site scripting (XSS) attacks, while the Secure flag ensures that the cookie is only sent over HTTPS.
+
+In a server-side application, you can store the token in a secure storage system, such as a database or cache, 
+and associate it with the user who generated it. You can then retrieve the token from the storage system when needed 
+and use it to authenticate API requests.
+
+It's important to note that access tokens usually have an expiration time. 
+So, you may need to refresh the token periodically to ensure that you have a valid token to use for making API requests. 
+The refresh token is usually obtained along with the access token and can be used to obtain a new access token when the old one expires.
+*/
+
+//THIS IS JUST A TEST ENDPOINT TO SEE IF CODE WORKS FOR fetch.js
+//delete this later since frontend handling fetch requests is cleaner, no need to use server as middleware to fetch spotify data
+// app.post('/getRecs', async (req, res) => {
+//   //axios.post("/getRecs", {genres: "pop"})
+//   const { genres } = req.body;
+//   // const [cookies] = useCookies(['access_token']);
+//   // const token = cookies.get('access_token');
+//   // const tokenType = cookies.get('token_type');
+//   const token = req.cookies ? req.cookies['access_token'] : null;
+//   const tokenType = req.cookies ? req.cookies['token_type'] : null;
+
+//   const params = {
+//     limit: 50,
+//     seed_genres: 'pop', //genres up to 5, need to be a string, comma-separated. ex: "pop,edm,chill"
+//     max_popularity: 40, //hardcoded for now? maybe let UI handle an input field for popularity too
+//   };
+//   axios.defaults.headers.common['Authorization'] = `${tokenType} ${token}`;
+
+//   try {
+//     const response = await axios.get(
+//       'https://api.spotify.com/v1/recommendations',
+//       { params }
+//     );
+
+//     let trackDetails = []; //array to store all 20 found uris of tracks from api call
+
+//     response.data.tracks.forEach((track) => {
+//       //only store tracks that have preview URLs
+//       if (track.preview_url !== null) {
+//         trackDetails.push({
+//           trackName: track.name,
+//           artistName: track.artists[0].name,
+//           albumImg: track.album.images[0], //get the largest size of album img for track, obj contains url and height/width
+//           trackUri: track.uri,
+//           previewUrl: track.preview_url,
 //         });
 
 //         res.redirect("http://localhost:8080");
