@@ -14,14 +14,14 @@ export default function MainPage(props){
   // extract necessary props
   async function getTracks() {
     const url = `https://api.spotify.com/v1/recommendations?seed_genres=${genre}`;
-    const headers = { Authorization: `Bearer BQDEZ1xE2KWohQaCwm7XyIlSTWHAZwWc9sbLAXiD_16lnonK090-tQSyUn1KQ06CZIDX_EtuYU2AKoAl1TEiJDCPSOxveWbP4WTEoDDP0Z20qgTEZ25_1C0xbYOyx4o4gSoriHDwwNyaYvIXY8ZvboffIp51X0hkWQTU0Uc1Vs34Z-Y7EL617TcF6w9jxQTUcf3V64AqN_D60kVQDAS78to` };
+    const headers = { Authorization: `Bearer BQCWgiT1sdRNdDggEEvk8c3HTcyskISsmWOaETLU3Dr8VWx3efJ0o5vJgv5LtyGTAynVHYa3_hnYtCkvdtMg6M3BZva_7wMb87VidrPXIWjAcWbSKk0cTaFO0UItASKT46ndCNz6W7q-HFu9fVu7uVxi0HOXmf0VqzHnotH4jdCMXsVI8Ax2Jfj_8U3cpLVqb3BZC4ohF_5AHx2FmkT0Fsg` };
   
     try {
       const response = await axios.get(url, { headers });
       // console.log("response.data: ", response.data)
       console.log('response.data', response.data)
       setTracks(response.data.tracks.filter(track => track.preview_url !== null));
-      console.log("songs:", songs)      
+      // console.log("songs:", songs)      
     } catch (err) {
       console.error('Error in getTracks:', err);
     }
@@ -41,7 +41,7 @@ export default function MainPage(props){
       <input onChange={handleChange} placeholder="Enter Genre here"></input>
       <button id='searchbutton' onClick={getTracks}>Search</button>
     </div>
-    <Card tracks={tracks}/>
+    <Card tracks={tracks} genre={genre}/>
    {/* //link button for playlist? */}
   </div>
    
