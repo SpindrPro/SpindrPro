@@ -15,8 +15,8 @@ export default function MainPage(props){
   // extract necessary props
   async function getTracks() {
     const url = `https://api.spotify.com/v1/recommendations?seed_genres=${genre}`;
-    const headers = { Authorization: `Bearer BQCCT2TURoSha-StmbutBQorXUtG53e1tiILdCCwwVVkooUnw2QSkfKolaVUQ0wZXCR7Ym4WGEY7o8RkAqF6AfzExhRmWqYm_jcoJAzJ3PfgQgE4Ouxdlbwf3lNd-2QCsj4z-94_GUL8K3aFuLiJ1tNfC6uuqWvAf2WMw38Mzb-aa7TTvPRHC27QeynqxB2bRAD_pUVeAu10hwnNZvLUvOU` };
-  
+    const headers = { Authorization: `Bearer ${props.cookie}` };
+
     try {
       const response = await axios.get(url, { headers });
       // console.log("response.data: ", response.data)
@@ -42,7 +42,7 @@ export default function MainPage(props){
       <input onChange={handleChange} placeholder="Enter Genre here"></input>
       <button id='searchbutton' onClick={getTracks}>Search</button>
     </div>
-    <Card tracks={tracks} genre={genre}/>
+    <Card user={props.user} tracks={tracks} genre={genre}/>
    {/* //link button for playlist? */}
   </div>
    

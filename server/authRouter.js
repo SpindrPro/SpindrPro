@@ -5,10 +5,11 @@ const base64url = require('base64url');
 const querystring = require('querystring');
 const path = require('path');
 require("dotenv").config();
+
 codeVerifierStorage = {}
 
-const clientId = '5a2b5e1d98494a7293aa9f25059eb02b'; //OUR OWN CLIENT ID from .env file
-const clientSecret = '31a08531ecb542ef8b4311bf85040ed5'; //OUR OWN OWN CLIENT SECRET
+const clientId = 'd9584ec6374c4119a19d2bea2b63f583'; //OUR OWN CLIENT ID from .env file
+// const clientSecret = '31a08531ecb542ef8b4311bf85040ed5'; //OUR OWN OWN CLIENT SECRET
 const redirectUri = 'http://localhost:3000/callback';
 
 authRouter.get("/login", (req, res) => {
@@ -85,8 +86,9 @@ authRouter.get("/login", (req, res) => {
         const tokens = await requestAccessToken(clientId, redirectUri, codeVerifierStorage.codeVerifier, code);
         accessToken = tokens.access_token;
         console.log("accessToken: ", accessToken);
+        res.cookie('token', accessToken);
         // res.send({accessToken});
-        res.redirect('http://localhost:8080/')
+        res.redirect('http://localhost:8080/home')
       } catch (error) {
         console.error(error);
         res.status(500).send('Error occurred during the authorization process');

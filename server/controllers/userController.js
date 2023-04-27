@@ -4,6 +4,25 @@ const Track = require('../models/trackModel.js');
 
 const userController = {};
 
+// create a new user in DB
+userController.createUser = async (req, res, next) => {
+  const { user_id } = req.body;
+  try{
+    await User.create({
+      user_id: user_id,
+      tracks: []
+    });
+    res.locals.user_id = user_id;
+    return next();
+  }
+  catch(err){
+    return next({
+       log: `error in userController.createUser. ERROR: ${err} `,
+       message: 'Error in userController.createUser'
+    })
+  };  
+};
+
 // get all of user's faved tracks
 userController.getTracks = async (req, res, next) => {
     const { user_id } = req.params;
@@ -54,5 +73,30 @@ console.log("song id: ", track.id)
         })
     };
 };
+
+userController.findUser = async (req, res, next) => {
+  const { user_id } = req.body;
+  console.log(req.body)
+  // console.log(typeof id)
+  try{
+    const foundUser = await User.findOne({user_id: user_id}).exec();
+    if(foundUser){
+      res.locals.found = true;
+    }
+    else {
+      res.locals.found = false;
+    }
+    return next();
+  }
+  catch (error) {
+    return next ({
+      log: `Error in userController.findUser. ERROR: ${error}`,
+      message: 'Error in userController.findUser'
+  });
+};
+  
+  
+
+}
 
 module.exports = userController;
