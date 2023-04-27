@@ -8,12 +8,14 @@ const querystring = require("node:querystring");
 const base64url = require('base64url');
 // const axios = require("axios");
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 
 const User = require("./models/userModel") //easier library for fetching
 //this allows you to access .env files to read data
 //client ID is stored in .env file for security
 app.use(express.json());
 app.use(cors());
+app.use(cookieParser());
 
 const PORT = 3000;
 
