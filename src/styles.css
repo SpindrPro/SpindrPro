@@ -1,12 +1,11 @@
-* {
-  background-color: #121212;
-  color: white;
-  font-family: 'Cabin' ;
-  /* border: solid red 1px; */
+body {
+  background: #1f2029
+  /* background: -webkit-linear-gradient(to right, #061161, #780206);
+  background: linear-gradient(to right, #061161, #780206); */
 }
 
 /* Styling for login page */
-#login {
+/* #login {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -14,17 +13,17 @@
   border: solid 1px white;
   position: absolute;
   top: 30%;
-  left: 40%;
-  /* background-color: #430a0a; */
+  left: 40%; 
+  background-color: #430a0a; 
   color: white;
   border-radius: 20px;
-  padding: 20px;
-  /* width: 30%; */
+  padding: 20px; 
+  width: 30%; 
   
-}
+ }
 #login:hover { 
   background-color: #242424;
-}
+} 
 
 #login input,#login button {
   display: flex;
@@ -37,9 +36,9 @@
   background-color: #242424;
 }
 
-#login form, h1 {
+ #login form, h1 {
   background-color: #1a1a1a;
-}
+} 
 
 #login button {
   justify-content: center;
@@ -48,20 +47,17 @@
   width: 30%;
   align-items: center;
   outline: none;
-  /* width: 30px; */
+  width: 30px; 
 
 }
-
+*/
 /* Styling for main page */
-#main-page-container {
+/* #main-page-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
+} */
 
-h1 {
-  margin: 1em 2em;;
-}
 
 
 #card {
@@ -85,14 +81,26 @@ div.swipe {
   flex-direction: column;
   align-items: center;
   position: absolute;
-  /* top: 30%; */
 }
 
+/* .stacked-cards {
+  position: absolute;
+  width: 100%;
+} */
+
 .cardContainer {
+  margin-top: 100px; 
+  display: flex;
+  justify-content: center; 
+  /* align-items: center;  */
+  /* width: 50vw;
+  height: 50vh;
+  overflow: hidden; */
   width: 90vw;
   max-width: 260px;
   height: 300px;
 }
+
 
 .card {
   position: relative;
@@ -133,7 +141,7 @@ div.swipe {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  max-width: 400px;
+  max-width: 600px;
   width: 20%;
 }
 
@@ -154,7 +162,8 @@ div.swipe {
   align-self: center;
   border-radius: 20px;
   border: solid white;
-  width: 30%;
+  width: 40%;
+  color: white;
 }
 
 button:hover {
@@ -175,11 +184,17 @@ button:hover {
   flex-direction: row;
 
 } */
-/* 
-.container1 {
+
+/* .container1 {
   display: flex;
   align-items: center;
-} */
+}  */
+
+.card:hover {
+  transform-style: preserve-3d;
+	transform: rotateY(180deg);
+	box-shadow: -5px 5px 15px rgba(0,0,0, .3);
+}
 
 input:focus {
   outline: 1px solid rgb(18, 236, 18);

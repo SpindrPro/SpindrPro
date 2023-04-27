@@ -1,66 +1,54 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import MainPage from './mainPage';
+import Playlist from './Playlist';
 import Login from './login';
-import fetch from 'node-fetch'
 import axios from 'axios';
-import * as Spotify from './fetch';
+import Cookies from 'js-cookie';
+import {BrowserRouter, Routes, Route, useNavigate} from "react-router-dom";
 
 
 function App() {
+  
+  const [user, setUser] = useState('');
 
-  //set initialState here
-  const initialState = {
-    trackData: '',
-  };
-
-  const [state, setState] = useState(initialState);
-
-  // Variable to store music list
-  let musicList = 'Artist Name';
-  // Variable that will store the current text of search input
-  let searchValue = '';
-  // Function that runs when onchange
-  function handleOnChange(e){
-    //set target.value of input field to variable
-   searchValue = e.target.value;
-  }
-  // Function that gets a list of music recomendations when button is clicked
-  const handleMainPageButtonClick = (e) => {
-  //set variable for getRecc function
-  //pass in search val as argument
-  axios.defaults.withCredentials = true; // not what youre supposed to do
-  axios
-      .post('http://localhost:3000/getSongRecs', { genre: 'pop' })
-      .then((res) => {
-        console.log(res)
-        const trackRes = res.data.trackDetails;
-        setState({...state, trackData: trackRes});
-        console.log(state);
-      });
-
-  console.log('IMAGE', state.trackData[0].albumImg.url);
-  }
-  // A state that represents if user is logged in
-  const [loggedIn, setLoggedIn] = useState(false);
-  // When login is clicked, redirects to spodify to sign in
-  const handleLoginClick = (e) => {
-    e.preventDefault();
-    // Make a get request to /login
-    if (loggedIn === false) {
-    // window.location.href='http://localhost:3000/login'; 
-    setLoggedIn(true);
-  }
-  }
-  // If user is logged in, return mainpage component
-  if (loggedIn) {
-     return (
-     <div>
-      <h1 id='title'>Spinder</h1>
-     <MainPage handleOnChange={(e) => handleOnChange(e)} getRecommendations={() => handleMainPageButtonClick()} musicList={musicList}/>
-     </div>
-     )
+  async function getID(token) {
+    try {
+      const response = await fetch('https://api.spotify.com/v1/me', {
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      });  
+      const userInfo = await response.json();
+      console.log(userInfo);
+      await axios.post("http://localhost:3000/user/find",{
+        user_id: userInfo.id
+      })
+        .then(response => {
+          console.log("response.data: ", response.data);
+          if(response.data === true){
+            setUser(userInfo.id);
+          }
+          else{
+            axios.post("http://localhost:3000/user/create", {
+              user_id: userInfo.id
+            })
+             .then(response => setUser(response.data))
+          }
+        })
+    } catch (error) {
+      console.log(`Error in getting user ID from Spotify: ${error}`);
     }
-  return <Login handleLoginClick={handleLoginClick}/>  
+  };
+  useEffect(() => {getID(Cookies.get("token"))}, []);
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path='/' element={<Login/>}/>
+        <Route path='/home' element={<MainPage user={user} cookie={Cookies.get("token")}/>}/>
+        <Route path='/playlist' element={<Playlist user={user}/>}/>
+      </Routes>
+    </BrowserRouter>
+   );  
 }
 
 export default App;

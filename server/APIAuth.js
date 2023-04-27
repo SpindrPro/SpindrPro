@@ -36,8 +36,8 @@ function generateAuthUrl(clientId, redirectUri, codeChallenge) {
     return `${baseUrl}?${querystring.stringify(params)}`;
   };
 
-const clientId = process.env.CLIENTID; //OUR OWN CLIENT ID from .env file
-const clientSecret = process.env.CLIENTSECRET; //OUR OWN OWN CLIENT SECRET
+const clientId = process.env.CLIENT_ID; //OUR OWN CLIENT ID from .env file
+const clientSecret = process.env.CLIENT_SECRET; //OUR OWN OWN CLIENT SECRET
 const redirectUri = 'http://localhost:3000/callback';
 const authUrl = generateAuthUrl(clientId, redirectUri, codeChallenge);
 console.log(`Authorization URL: ${authUrl}`);
@@ -51,7 +51,7 @@ app.get('/callback', async (req, res) => {
         const tokens = await requestAccessToken(clientId, redirectUri, codeVerifier, code);
         accessToken = tokens.access_token;
         console.log("accessToken: ", accessToken);
-
+        res.send('Access token obtained successfully');
       } catch (error) {
         console.error(error);
         res.status(500).send('Error occurred during the authorization process');
