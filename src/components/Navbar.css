@@ -1,18 +1,19 @@
-
+@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300);
 @import url('https://fonts.googleapis.com/css2?family=Cabin&family=Dosis:wght@200&family=Sigmar&display=swap');
 .Navbar {
     box-sizing: border-box;
     margin: 0;
-    background: #02122e;
+    background: #2e2f3c;
     width: 100%;
     padding: 0.5rem;
     display: flex;
     justify-content: space-around;
+    border-radius: 30px;
   }
   
   .Navbar a {
-    font-family: 'Dosis', sans-serif;
-    font-weight: 500;
+    font-family: 'Source Sans Pro', sans-serif;;
+    font-weight: 1000;
     font-size: 20px;
     text-decoration: none;
     color: #fff;
