@@ -30,15 +30,14 @@ export default function Card(props) {
   const swiped = async (direction, swipedTrack) => {
     console.log(direction)
     // // stop the audio if it's playing
-    // console.log(swipedTrack.id)
-    // console.log(playingStatus[swipedTrack.id])
     if (playingStatus[swipedTrack.id]) togglePlay(swipedTrack.id);
     // if card is swiped right, add track to db
     if (direction === 'right') {
       
       // send post request to backend to add a new song to user's fav
       try {
-        const response = await fetch('http://localhost:3000/user/1234', {
+        console.log('USER', props.user)
+        const response = await fetch(`http://localhost:3000/user/${props.user}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

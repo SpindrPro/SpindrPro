@@ -283,7 +283,7 @@ app.get("/", (req, res) => {
 //     });
 // });
 
-app.listen(PORT, () => console.log(`Listening on PORT: ${PORT}`));
+// app.listen(PORT, () => console.log(`Listening on PORT: ${PORT}`));
 
 // //TODO:
 // //CONNECT TO THE DATABASE TO STORE ACCESS TOKEN INFO ON USER AS WELL AS OTHER DATA LIKE PREVIOUS SONG SELECTIONS AND RECS

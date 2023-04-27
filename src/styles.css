@@ -1,8 +1,6 @@
-* {
-  background-color: #121212;
-  color: white;
-  font-family: 'Cabin' ;
-  /* border: solid red 1px; */
+body {
+  background: -webkit-linear-gradient(to right, #061161, #780206);
+  background: linear-gradient(to right, #061161, #780206);
 }
 
 /* Styling for login page */
@@ -133,7 +131,7 @@ div.swipe {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  max-width: 400px;
+  max-width: 600px;
   width: 20%;
 }
 
@@ -154,7 +152,8 @@ div.swipe {
   align-self: center;
   border-radius: 20px;
   border: solid white;
-  width: 30%;
+  width: 40%;
+  color: white;
 }
 
 button:hover {
